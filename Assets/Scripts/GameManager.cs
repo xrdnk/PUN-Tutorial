@@ -7,6 +7,18 @@ using Photon.Realtime;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
+    #region Public Fields
+    // シングルトン化
+    public static GameManager Instance;
+    #endregion
+
+    #region MonoBehavior Callbacks
+    void Start()
+    {
+        Instance = this;
+    }
+    #endregion
+
     #region Photon CallBacks
     /// <summary>
     /// ルームから退出した時

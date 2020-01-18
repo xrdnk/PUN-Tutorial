@@ -32,6 +32,17 @@ public class PlayerAnimatorManager : MonoBehaviour
             return;
         }
 
+        // ジャンプ動作の前に，走っているか確認
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        // 走っていればジャンプを許可する
+        if (stateInfo.IsName("Base Layer.Run"))
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _animator.SetTrigger("Jump");
+            }
+        }
+
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -41,7 +52,6 @@ public class PlayerAnimatorManager : MonoBehaviour
         }
 
         _animator.SetFloat("Speed", h * h + v * v);
-
         _animator.SetFloat("Direction", h, directionDampTime, Time.deltaTime);
     }
     #endregion
