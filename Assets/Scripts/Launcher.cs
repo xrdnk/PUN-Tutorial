@@ -9,6 +9,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     #region Private Serializable Fields
     [SerializeField, Tooltip("各ルームの最大人数. 超過すると新しいルームが生成される．")]
     private byte maxPlayersPerRoom = 4;
+    [SerializeField, Tooltip("ルーム管理画面")]
+    private GameObject controlPanel;
+    [SerializeField, Tooltip("接続中を知らせるテキスト")]
+    private GameObject progressLabel;
     #endregion
 
     #region Private Fields
@@ -27,7 +31,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        Connect();
+        progressLabel.SetActive(false);
+        controlPanel.SetActive(true);
     }
 
     void Update()
@@ -53,6 +58,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     /// <param name="cause"></param>
     public override void OnDisconnected(DisconnectCause cause)
     {
+        progressLabel.SetActive(false);
+        controlPanel.SetActive(true);
         Debug.LogWarningFormat("PUN Basic Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}, cause");
     }
 
@@ -63,8 +70,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     /// <param name="message">エラーメッセージ</param>
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinRandomFailed() was called by PUN." +
-                "No random available, so we create one. \nCalling: PhotonNetwork.CreateRoom");
+        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinRandomFailed() was called by PUN. No random available, so we create one. \nCalling: PhotonNetwork.CreateRoom");
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
     }
 
@@ -73,8 +79,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     /// </summary>
     public override void OnJoinedRoom()
     {
-        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN." +
-                "Now this client is in a room");
+        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room");
     }
     #endregion
 
@@ -85,6 +90,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     /// </summary>
     public void Connect()
     {
+        progressLabel.SetActive(true);
+        controlPanel.SetActive(false);
+
         if (PhotonNetwork.IsConnected)
         {
             // ランダムなルームに接続を施行する
