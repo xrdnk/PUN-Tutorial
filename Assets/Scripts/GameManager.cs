@@ -10,12 +10,30 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region Public Fields
     // シングルトン化
     public static GameManager Instance;
+    public GameObject playerPrefab;
     #endregion
 
     #region MonoBehavior Callbacks
     void Start()
     {
         Instance = this;
+
+        if (playerPrefab == null)
+        {
+            Debug.LogError("<Color = Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+        }
+        else
+        {
+            if (PlayerManager.LocalPlayerInstance == null)
+            {
+                Debug.LogFormat("We are Instantiating Local Player from {0}, Application.loaderLevelName");
+                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+            }
+            else
+            {
+                Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
+            }
+        }
     }
     #endregion
 

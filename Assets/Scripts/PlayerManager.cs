@@ -37,11 +37,20 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     #region Public Fields
     [Tooltip("プレイヤーの現在HP")]
     public float Health = 1f;
+    [Tooltip("ローカルプレイヤーインスタンス")]
+    public static GameObject LocalPlayerInstance;
     #endregion
 
     #region MonoBehaviour Callbacks
     void Awake()
     {
+        if (photonView.IsMine)
+        {
+            PlayerManager.LocalPlayerInstance = this.gameObject;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+
         if (beams == null)
         {
             Debug.LogError("<Color = Red><a>Missing</a></Color> Beams Reference.", this);
@@ -71,6 +80,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
         }
+
+#if UNITY_5_4_OR_NEWER
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += (SceneManagerHelper, loadingMode) =>
+            {
+                this.CalledOnLevelWasLoaded(SceneManagerHelper.buildIndex);
+            };
+#endif
     }
 
     // Update is called once per frame
@@ -130,6 +146,21 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         // 積分してダメージを与える
         Health -= 0.1f * Time.deltaTime;
     }
+
+#if !UNITY_5_4_OR_NEWER
+    void OnLevelWasLoaded(int level){
+        this.CalledOnLevelWasLoaded(level);
+    }
+#endif
+
+    void CalledOnLevelWasLoaded(int level)
+    {
+        if (!Physics.Raycast(transform.position, -Vector3.up, 5f))
+        {
+            transform.position = new Vector3(0f, 5f, 0f);
+        }
+    }
+
     #endregion
 
     #region Custom
