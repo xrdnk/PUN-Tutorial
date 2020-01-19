@@ -4,8 +4,26 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.EventSystems;
 
-public class PlayerManager : MonoBehaviourPunCallbacks
+public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
 {
+    #region IPunObservable implementation
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // データを他のプレイヤーに送る
+            stream.SendNext(isFiring);
+            stream.SendNext(Health);
+        }
+        else
+        {
+            // データを受信する
+            this.isFiring = (bool)stream.ReceiveNext();
+            this.Health = (float)stream.ReceiveNext();
+        }
+    }
+    #endregion
+
     #region Private Serialized Fields
     [SerializeField, Tooltip("ビーム")]
     private GameObject beams;
@@ -34,10 +52,34 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
+    void Start()
+    {
+        CameraWork _cameraWork = this.gameObject.GetComponent<CameraWork>();
+
+        if (_cameraWork != null)
+        {
+            if (photonView.IsMine)
+            {
+                _cameraWork.OnStartFollowing();
+            }
+        }
+        else
+        {
+            Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        ProcessInputs();
+        if (photonView.IsMine)
+        {
+            ProcessInputs();
+        }
 
         if (beams != null && isFiring != beams.activeInHierarchy)
         {
