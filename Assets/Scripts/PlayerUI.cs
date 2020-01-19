@@ -49,7 +49,7 @@ public class PlayerUI : MonoBehaviour
     {
         if (targetTransform != null)
         {
-            targetPosition = targetPosition.position;
+            targetPosition = targetTransform.position;
             targetPosition.y += characterControllerHeight;
             this.transform.position = Camera.main.WorldToScreenPoint(targetPosition) + screenOffset;
         }
