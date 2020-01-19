@@ -27,6 +27,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     #region Private Serialized Fields
     [SerializeField, Tooltip("ビーム")]
     private GameObject beams;
+    [SerializeField, Tooltip("Player UIプレハブ")]
+    private GameObject playerUiPrefab;
     #endregion
 
     #region Private Fields
@@ -79,6 +81,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
+        }
+
+        if (playerUiPrefab != null)
+        {
+            GameObject _uiGo = Instantiate(playerUiPrefab);
+            _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+        }
+        else
+        {
+            Debug.LogWarning("<Color=Red><a>Missing</a></Color> PlayerUiPrefab reference on player Prefab.", this);
         }
 
 #if UNITY_5_4_OR_NEWER
@@ -159,6 +171,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             transform.position = new Vector3(0f, 5f, 0f);
         }
+
+        GameObject _uiGo = Instantiate(this.playerUiPrefab);
+        _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
     }
 
     #endregion
