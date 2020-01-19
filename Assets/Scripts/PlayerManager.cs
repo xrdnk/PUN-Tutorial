@@ -112,6 +112,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         if (beams != null && isFiring != beams.activeInHierarchy)
         {
             beams.SetActive(isFiring);
+            AudioManager.Instance.PlayOneShot("Beam");
         }
 
         if (Health <= 0f)
@@ -135,7 +136,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
-
+        AudioManager.Instance.PlayOneShot("Damaged");
         Health -= 0.1f;
     }
 
@@ -156,6 +157,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         // 積分してダメージを与える
+        AudioManager.Instance.PlayOneShot("Damaged");
         Health -= 0.1f * Time.deltaTime;
     }
 

@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (PlayerManager.LocalPlayerInstance == null)
             {
-                Debug.LogFormat("We are Instantiating Local Player from {0}, Application.loaderLevelName");
+                Debug.LogFormat("We are Instantiating Local Player from {0}, Application.loaderLevelName", this);
                 PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
             }
             else

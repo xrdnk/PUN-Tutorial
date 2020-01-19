@@ -6,21 +6,19 @@ using UnityEngine.UI;
 public class PlayerUI : MonoBehaviour
 {
     #region Private Fields
-    [Tooltip("プレイヤー名を表示するUI")]
-    private Text playerNameText;
-    [Tooltip("プレイヤーHPを表示するスライダー")]
-    private Slider playerHealthSlider;
-
     private PlayerManager target;
-
     float characterControllerHeight = 0f;
     Transform targetTransform;
     Vector3 targetPosition;
     #endregion
 
     #region Private Serialized Field
+    [SerializeField, Tooltip("プレイヤー名を表示するUI")]
+    private Text playerNameText;
+    [SerializeField, Tooltip("プレイヤーHPを表示するスライダー")]
+    private Slider playerHealthSlider;
     [SerializeField, Tooltip("オフセット")]
-    private Vector3 screenOffset = new Vector3(0f, 30f, 0f);
+    private Vector3 screenOffset = new Vector3(0f, 5f, 0f);
     #endregion
 
     #region MonoBehaviour CallBacks

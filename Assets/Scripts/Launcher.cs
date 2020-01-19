@@ -109,7 +109,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         isConnecting = true;
 
         progressLabel.SetActive(true);
-        controlPanel.SetActive(false);
+        //controlPanel.SetActive(false);
 
         if (PhotonNetwork.IsConnected)
         {
